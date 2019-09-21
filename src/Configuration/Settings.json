@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "NorthwindConnection": "Server=.\\sqlexpress;Database=Northwind;Trusted_Connection=True;MultipleActiveResultSets=true"
+  }
+}
