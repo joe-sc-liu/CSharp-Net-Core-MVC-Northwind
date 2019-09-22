@@ -7,7 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using Northwind.Util;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Northwind.DAL;
+using Northwind.DAL.Interfaces;
+using Northwind.Service;
+using Northwind.Service.Interfaces;
+
 
 namespace CSharp_Net_Core_MVC_Northwind
 {
@@ -32,12 +36,34 @@ namespace CSharp_Net_Core_MVC_Northwind
             });
 
 
-            //將Settings.json的資訊注入
-            services.Configure<Settings>(GetSettings());
+            IConfiguration _config = GetSettings();
+            string connstr = _config.GetConnectionString("NorthwindConnection");
 
-            //↓待會在Controller便可使用相依性注入取得BloggingContext物件
+            //將Settings.json的資訊注入
+            services.Configure<Settings>(_config);
+
+            //相依性注入取得NorthwindContext物件
             services.AddDbContext<Northwind.Entities.Models.NorthwindContext>(options =>
-                  options.UseSqlServer(GetSettings().GetSection("ConnectionStrings").GetSection("NorthwindConnection").Value));
+                  options.UseSqlServer(_config.GetConnectionString("NorthwindConnection")));
+
+
+            //https://blog.johnwu.cc/article/ironman-day04-asp-net-core-dependency-injection.html
+            //Transient
+            //如預期，每次注入都是不一樣的實例。
+            //Scoped
+            //在同一個 Requset 中，不論是在哪邊被注入，都是同樣的實例。
+            //Singleton
+            //不管 Requset 多少次，都會是同一個實例。
+            //相依注入GenericRepository
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+
+
+           
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IProductsDAL, ProductsDAL>();
+            services.AddTransient<IProductsService, ProductsService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
