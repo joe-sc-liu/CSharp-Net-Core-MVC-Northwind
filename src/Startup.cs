@@ -11,6 +11,7 @@ using Northwind.DAL;
 using Northwind.DAL.Interfaces;
 using Northwind.Service;
 using Northwind.Service.Interfaces;
+using Serilog;
 
 
 namespace CSharp_Net_Core_MVC_Northwind
@@ -36,6 +37,7 @@ namespace CSharp_Net_Core_MVC_Northwind
             });
 
 
+            #region 將資料庫entities所需的設定注入
             IConfiguration _config = GetSettings();
             string connstr = _config.GetConnectionString("NorthwindConnection");
 
@@ -45,6 +47,11 @@ namespace CSharp_Net_Core_MVC_Northwind
             //相依性注入取得NorthwindContext物件
             services.AddDbContext<Northwind.Entities.Models.NorthwindContext>(options =>
                   options.UseSqlServer(_config.GetConnectionString("NorthwindConnection")));
+            #endregion
+
+
+            //注入 Serilog
+            services.AddSingleton(Serilog.Log.Logger);
 
 
             //https://blog.johnwu.cc/article/ironman-day04-asp-net-core-dependency-injection.html
@@ -80,6 +87,9 @@ namespace CSharp_Net_Core_MVC_Northwind
                 app.UseHsts();
             }
 
+            //加入Serilog，要在UseStaticFiles的上面
+            app.UseSerilogRequestLogging();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -98,7 +108,7 @@ namespace CSharp_Net_Core_MVC_Northwind
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if (env.IsDevelopment() || env.IsProduction())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }

@@ -7,6 +7,8 @@ namespace Northwind.Service.Interfaces
     {
         IQueryable<Products> GetAll();
 
+        Products Get(int id);
+
     }
 
 

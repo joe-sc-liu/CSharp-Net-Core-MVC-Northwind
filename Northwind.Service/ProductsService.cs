@@ -19,6 +19,11 @@ namespace Northwind.Service
             return _ProductsDAL.GetAll();
         }
 
+        public Products Get(int id)
+        {
+            return _ProductsDAL.GetOneProductByID(id);
+        }
+
 
     }        
 }
