@@ -12,7 +12,7 @@ using Northwind.DAL.Interfaces;
 using Northwind.Service;
 using Northwind.Service.Interfaces;
 using Serilog;
-
+using AutoMapper;
 
 namespace CSharp_Net_Core_MVC_Northwind
 {
@@ -28,6 +28,20 @@ namespace CSharp_Net_Core_MVC_Northwind
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            #region 映射model及viewModel
+            //https://www.cjavapy.com/article/100/
+            //Install-Package AutoMapper -Version 9.0.0
+            //Install-Package AutoMapper.Extensions.Microsoft.DependencyInjection -Version 7.0.0
+            //Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            #endregion
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the Angular files will be served from this directory
@@ -62,14 +76,12 @@ namespace CSharp_Net_Core_MVC_Northwind
             //Singleton
             //不管 Requset 多少次，都會是同一個實例。
             //相依注入GenericRepository
-            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
-
-
-           
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));           
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IProductsDAL, ProductsDAL>();
             services.AddTransient<IProductsService, ProductsService>();
-
+            services.AddTransient<ICustomerDAL, CustomerDAL>();
+            services.AddTransient<ICustomerService, CustomerService>();
 
         }
 

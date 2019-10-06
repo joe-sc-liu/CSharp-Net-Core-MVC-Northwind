@@ -1,27 +1,28 @@
 ﻿using Northwind.Service.Interfaces;
-using Northwind.DAL;
 using Northwind.DAL.Interfaces;
 using Northwind.Entities.Models;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Northwind.Service
 {
     public class ProductsService : IProductsService
     {
-        private IProductsDAL _ProductsDAL;
+        private readonly IProductsDAL _ProductsDAL;
+
         public ProductsService(IProductsDAL iProductsDAL)
         {
             _ProductsDAL = iProductsDAL;
         }
 
-        public IQueryable<Products> GetAll()
+        public async Task<IEnumerable<Products>> GetAll()
         {
-            return _ProductsDAL.GetAll();
+            return await _ProductsDAL.GetAll();
         }
 
-        public Products Get(int id)
+        public async Task<Products> Get(int id)
         {
-            return _ProductsDAL.GetOneProductByID(id);
+            return await _ProductsDAL.GetOneByID(id);
         }
 
 

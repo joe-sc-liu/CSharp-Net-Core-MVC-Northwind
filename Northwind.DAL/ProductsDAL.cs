@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Northwind.DAL.Interfaces;
 using Northwind.Entities.Models;
@@ -18,15 +19,12 @@ namespace Northwind.DAL
             _uow = unit;
         }
 
-        /// <summary>取得所有產品列表
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public IQueryable<Products> GetAll()
+
+        public async Task<IEnumerable<Products>> GetAll()
         {
             try
             {
-                return _uow.Repository<Products>().GetAll();
+                return await _uow.Repository<Products>().GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -34,19 +32,32 @@ namespace Northwind.DAL
             }
         }
 
-        /// <summary>依產品ID取得一筆產品
-        /// 
-        /// </summary>
-        /// <param name="ProductID">產品ID</param>
-        /// <returns></returns>
-        public Products GetOneProductByID(int ProductID)
+        public async Task<bool> IsExist(int ProductID)
+        {
+            try
+            {
+                Products products = await GetOneByID(ProductID);
+
+                if (products == null)
+                    return false;
+                else
+                    return  true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<Products> GetOneByID(int ProductID)
         {
             try
             {
                 Expression<Func<Products, bool>> predicate = null;
                 predicate = f => f.ProductID == ProductID;
 
-                return _uow.Repository<Products>().GetBy(predicate).FirstOrDefault();
+                return await _uow.Repository<Products>().GetByAsync(predicate);
             }
             catch (Exception ex)
             {
@@ -54,20 +65,14 @@ namespace Northwind.DAL
             }
         }
 
-        /// <summary>依產品ID與分類ID，取得產品列表
-        /// 
-        /// </summary>
-        /// <param name="ProductID">產品ID</param>
-        /// <param name="CategoryID">分類ID</param>
-        /// <returns></returns>
-        public IQueryable<Products> GetProductSByProductIDAndCategoryID(int ProductID, int CategoryID)
+        public async Task<IEnumerable<Products>> GetProductSByProductIDAndCategoryID(int ProductID, int CategoryID)
         {
             try
             {
                 Expression<Func<Products, bool>> predicate = null;
                 predicate = f => f.ProductID == ProductID && f.CategoryID.Value == CategoryID;
 
-                return _uow.Repository<Products>().GetBy(predicate);
+                return await _uow.Repository<Products>().GetAllByAsync(predicate);
             }
             catch (Exception ex)
             {
@@ -76,13 +81,11 @@ namespace Northwind.DAL
         }
 
 
-        public void CreateProducts(Products products)
+        public async Task<Products> CreateProducts(Products products)
         {
             try
             {
-                _uow.Repository<Products>().Insert(products);
-
-                _uow.Save();
+                return await _uow.Repository<Products>().InsertAsync(products);
             }
             catch(Exception ex)
             {
@@ -90,13 +93,11 @@ namespace Northwind.DAL
             }
         }
 
-        public void UpdateProducts(Products products)
+        public async Task<Products> UpdateProducts(Products products, object key)
         {
             try
             {
-                _uow.Repository<Products>().Update(products);
-
-                _uow.Save();
+                return await _uow.Repository<Products>().UpdateAsync(products, key);
             }
             catch (Exception ex)
             {
@@ -105,13 +106,20 @@ namespace Northwind.DAL
         }
 
 
-        public void DeleteProducts(Products products)
+        public async Task<int> DeleteProducts(int ProductID)
         {
             try
             {
-                _uow.Repository<Products>().Delete(products);
+                Products products = await GetOneByID(ProductID);
 
-                _uow.Save();
+                if(products != null)
+                {
+                    return await _uow.Repository<Products>().DeleteAsync(products);
+                }
+                else
+                {
+                    throw new ArgumentNullException();
+                }
             }
             catch (Exception ex)
             {

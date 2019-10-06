@@ -1,13 +1,16 @@
 ﻿using Northwind.Entities.Models;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Northwind.Service.Interfaces
 {
     public interface IProductsService
     {
-        IQueryable<Products> GetAll();
+        Task<IEnumerable<Products>> GetAll();
 
-        Products Get(int id);
+        Task<Products> Get(int id);
+
+
 
     }
 
