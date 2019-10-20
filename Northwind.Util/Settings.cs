@@ -8,6 +8,8 @@ namespace Northwind.Util
     public class Settings
     {
         public ConnectionStrings ConnectionStrings { get; set; }
+
+        public Tokens Tokens { get; set; }
     }
 
     public class ConnectionStrings
@@ -15,6 +17,12 @@ namespace Northwind.Util
         public string NorthwindConnection { get; set; }
     }
 
+    public class Tokens
+    {
+        public string ValidIssuer { get; set; }
+        public string IssuerSigningKey { get; set; }
+        public int ValidExpires { get; set; }
+    }
 
 
 }

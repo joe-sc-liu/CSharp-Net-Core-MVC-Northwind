@@ -1,5 +1,10 @@
 {
   "ConnectionStrings": {
     "NorthwindConnection": "Server=.\\sqlexpress;Database=Northwind;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "Tokens": {
+    "ValidIssuer": "Northwind.net",
+    "IssuerSigningKey": "4{!-!Rjx2.W]fX~jN:<Aes!Rjx2.W]fX~jN:<Ae$D'dLlnG%%du47dsi$3^&*sdo",
+    "ValidExpires": 5
   }
 }

@@ -28,7 +28,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ResultModel List()
+        public ActionResult<ResultModel> List()
         {
             //api/Customers
             try
@@ -42,12 +42,12 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                     IsSuccess = true
                 };
 
-                return result;
+                return Ok(result);
             }
             catch (Exception e)
             {
                 _logger.Error(e, "");
-                return new ResultModel { IsSuccess = false, Message = "" };
+                return BadRequest(new ResultModel { IsSuccess = false, Message = "" });
                 throw;
             }
         }
@@ -59,7 +59,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public ResultModel Get(string id)
+        public ActionResult<ResultModel> Get(string id)
         {
             //api/Customers/ERNSH
 
@@ -76,12 +76,12 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                     IsSuccess = true
                 };
 
-                return result;
+                return Ok(result);
             }
             catch (Exception e)
             {
                 _logger.Error(e, "");
-                return new ResultModel { IsSuccess = false, Message = "" };
+                return BadRequest(new ResultModel { IsSuccess = false, Message = "" });
                 throw;
             }
         }

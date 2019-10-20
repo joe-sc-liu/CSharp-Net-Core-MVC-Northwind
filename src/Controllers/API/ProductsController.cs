@@ -1,5 +1,6 @@
 ﻿using System;
 using CSharp_Net_Core_MVC_Northwind.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Northwind.Service.Interfaces;
 
@@ -26,14 +27,15 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                 _logger = logger.ForContext<ProductsController>();
         }
 
-        
+
 
         /// <summary>取得所有的Product資料
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
-        public ResultModel List()
+        public ActionResult<ResultModel> List()
         {
             //api/Products
             try
@@ -43,16 +45,16 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                 //List相當於mvc的index  api/Products
                 var result = new ResultModel
                 {
-                    Data = _IProductsService.GetAll(),
+                    Data = _IProductsService.GetAll().Result,
                     IsSuccess = true
                 };
 
-                return result;
+                return Ok(result);
             } 
             catch(Exception e)
             {
                 _logger.Error(e,"");
-                return new ResultModel { IsSuccess = false, Message = "" };
+                return BadRequest(new ResultModel { IsSuccess = false, Message = "" });
                 throw;
             }
         }
@@ -64,7 +66,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public ResultModel Get(int id)
+        public ActionResult<ResultModel> Get(int id)
         {
             //api/Products/75
 
@@ -72,18 +74,18 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
             {
                 _logger.Debug("取得產品資訊：{id}",id);
 
-                var result = new ResultModel
+                 var result = new ResultModel
                 {
-                    Data = _IProductsService.Get(id),
+                    Data = _IProductsService.Get(id).Result,
                     IsSuccess = true
                 };
 
-                return result;
+                return Ok(result);
             }
             catch (Exception e)
             {
                 _logger.Error(e, "");
-                return new ResultModel { IsSuccess = false, Message = "" };
+                return BadRequest(new ResultModel { IsSuccess = false, Message = "" });
                 throw;
             }
         }
