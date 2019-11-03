@@ -1,5 +1,6 @@
 ﻿using System;
 using CSharp_Net_Core_MVC_Northwind.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Northwind.Service.Interfaces;
 
@@ -27,6 +28,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// 
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public ActionResult<ResultModel> List()
         {
@@ -57,6 +59,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         [Route("{id}")]
         public ActionResult<ResultModel> Get(string id)

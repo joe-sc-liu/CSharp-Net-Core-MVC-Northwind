@@ -15,6 +15,9 @@ using Serilog;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace CSharp_Net_Core_MVC_Northwind
 {
@@ -44,7 +47,10 @@ namespace CSharp_Net_Core_MVC_Northwind
             services.AddSingleton(mapper);
             #endregion
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -83,6 +89,7 @@ namespace CSharp_Net_Core_MVC_Northwind
             services.AddTransient<IProductsService, ProductsService>();
             services.AddTransient<ICustomerDAL, CustomerDAL>();
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<ILoginService, LoginService>();
 
 
             //加入驗證token
@@ -137,6 +144,8 @@ namespace CSharp_Net_Core_MVC_Northwind
                 app.UseHsts();
             }
 
+
+
             //加入Serilog，要在UseStaticFiles的上面
             app.UseSerilogRequestLogging();
 
@@ -174,5 +183,7 @@ namespace CSharp_Net_Core_MVC_Northwind
                 .AddJsonFile(path: "Settings.json", optional: true, reloadOnChange: true);
             return builder.Build();
         }
+
+
     }
 }

@@ -16,7 +16,7 @@ namespace Northwind.DAL
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public CustomerDAL(IOptions<Settings> settings, IUnitOfWork unit, IMapper mapper) : base(settings)
+        public CustomerDAL(IOptionsSnapshot<Settings> settings, IUnitOfWork unit, IMapper mapper) : base(settings)
         {
             _uow = unit;
             _mapper = mapper;

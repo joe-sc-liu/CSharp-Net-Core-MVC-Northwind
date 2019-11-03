@@ -1,23 +1,31 @@
 ﻿using System;
+using System.Globalization;
 using CSharp_Net_Core_MVC_Northwind.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Northwind.Service.Interfaces;
+using System.Reflection;
+
 
 
 namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
 {
     //參考https://ithelp.ithome.com.tw/articles/10194989
 
+
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
-
         private readonly IProductsService _IProductsService;
         private readonly Serilog.ILogger _logger;
-
-        public ProductsController(IProductsService iProductsService, Serilog.ILogger logger)
+        private readonly IStringLocalizer _sharedLocalizer;
+        private readonly IStringLocalizer _localizer;
+        private readonly IStringLocalizer _stringLocalizerFactory;
+        public ProductsController(IProductsService iProductsService
+            , Serilog.ILogger logger
+            )
         {
             _IProductsService = iProductsService;
 
@@ -64,6 +72,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         [Route("{id}")]
         public ActionResult<ResultModel> Get(int id)
@@ -73,6 +82,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
             try
             {
                 _logger.Debug("取得產品資訊：{id}",id);
+
 
                  var result = new ResultModel
                 {

@@ -52,7 +52,7 @@ namespace CSharp_Net_Core_MVC_Northwind
             }
         }
 
-        
+
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()

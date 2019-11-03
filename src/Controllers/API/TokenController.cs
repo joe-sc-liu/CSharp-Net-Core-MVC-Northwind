@@ -2,6 +2,7 @@
 using CSharp_Net_Core_MVC_Northwind.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Northwind.Service.Interfaces;
 using Northwind.Util;
 using Northwind.ViewModels;
 
@@ -14,9 +15,10 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
     public class TokenController : ControllerBase
     {
         private readonly Serilog.ILogger _logger;
-        private readonly IOptions<Settings> _settings;
+        private readonly IOptionsSnapshot<Settings> _settings;
+        private readonly ILoginService _ILoginService;
 
-        public TokenController(Serilog.ILogger logger, IOptions<Settings> settings)
+        public TokenController(Serilog.ILogger logger, IOptionsSnapshot<Settings> settings, ILoginService iLoginService)
         {
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
@@ -24,6 +26,8 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                 _logger = logger.ForContext<TokenController>();
 
             _settings = settings;
+
+            _ILoginService = iLoginService;
         }
 
         [HttpPost]
@@ -44,7 +48,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
                 var signKey = _settings.Value.Tokens.IssuerSigningKey; // 請換成至少 16 字元以上的安全亂碼
                 var expires = _settings.Value.Tokens.ValidExpires; // 單位: 分鐘
 
-                if (ValidateUser(login))
+                if (_ILoginService.ValidateUser(login))
                 {
                     //List相當於mvc的index  api/Customers
                     var result = new ResultModel
@@ -68,10 +72,7 @@ namespace CSharp_Net_Core_MVC_Northwind.Controllers.API
             }
         }
 
-        private bool ValidateUser(LoginViewModel login)
-        {
-            return true; // TODO 寫驗證帳號fun
-        }
+
 
 
 

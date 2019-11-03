@@ -11,6 +11,7 @@
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <RootNamespace>CSharp_Net_Core_MVC_Northwind</RootNamespace>
+    <Authors>Joe Liu</Authors>
   </PropertyGroup>
 
   <ItemGroup>

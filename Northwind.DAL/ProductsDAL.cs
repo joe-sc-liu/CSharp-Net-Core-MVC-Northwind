@@ -14,7 +14,7 @@ namespace Northwind.DAL
     {
         private readonly IUnitOfWork _uow;
 
-        public ProductsDAL(IOptions<Settings> settings, IUnitOfWork unit) : base(settings)
+        public ProductsDAL(IOptionsSnapshot<Settings> settings, IUnitOfWork unit) : base(settings)
         {
             _uow = unit;
         }
